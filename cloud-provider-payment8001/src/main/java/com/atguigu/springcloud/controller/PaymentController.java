@@ -5,9 +5,12 @@ import com.atguigu.springcloud.entities.Payment;
 import com.atguigu.springcloud.service.PaymentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @ClassName: PaymentController
@@ -22,6 +25,9 @@ public class PaymentController {
 
     @Resource
     private PaymentService paymentService;
+
+    @Resource
+    private DiscoveryClient discoveryClient;
 
     @Value("${server.port}")
     private String serverPort;
@@ -46,5 +52,25 @@ public class PaymentController {
         } else {
             return new CommonResult(444, "Server Port[" + serverPort + "]查询失败", null);
         }
+    }
+
+    @GetMapping(value = "/payment/discovery")
+    public CommonResult discovery() {
+        List<String> services = discoveryClient.getServices();
+        for (String element : services) {
+            log.info("****element :{}", element);
+        }
+
+        List<ServiceInstance> instances1 = discoveryClient.getInstances("CLOUD-PAYMENT-SERVICE");
+        for (ServiceInstance instance : instances1) {
+            log.info("****CLOUD-PAYMENT-SERVICE instance :{}\t{}\t{}\t{}", instance.getServiceId(), instance.getPort(), instance.getHost(), instance.getUri());
+        }
+
+        List<ServiceInstance> instances2 = discoveryClient.getInstances("CLOUD-ORDER-SERVICE");
+        for (ServiceInstance instance : instances2) {
+            log.info("****CLOUD-ORDER-SERVICE instance :{}\t{}\t{}\t{}", instance.getServiceId(), instance.getPort(), instance.getHost(), instance.getUri());
+        }
+
+        return new CommonResult(200, "service discovery", discoveryClient);
     }
 }
