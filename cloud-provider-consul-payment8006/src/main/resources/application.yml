@@ -1,0 +1,13 @@
+server:
+  port: 8006
+
+spring:
+  application:
+    name: cloud-payment-service-consul
+  cloud:
+    consul:
+      host: heartzz.com
+      port: 8500
+      discovery:
+        service-name: ${spring.application.name}
+        prefer-ip-address: true
