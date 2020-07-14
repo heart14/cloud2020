@@ -3,6 +3,7 @@ package com.atguigu.springcloud.controller;
 import com.atguigu.springcloud.entities.CommonResult;
 import com.atguigu.springcloud.entities.Payment;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,7 +22,7 @@ import javax.annotation.Resource;
 @Slf4j
 public class OrderController {
 
-//    public static final String PAYMENT_BASE_URL = "http://localhost:8001";
+    //    public static final String PAYMENT_BASE_URL = "http://localhost:8001";
     public static final String PAYMENT_BASE_URL = "http://CLOUD-PAYMENT-SERVICE";
 
     @Resource
@@ -37,5 +38,18 @@ public class OrderController {
     public CommonResult<Payment> getPayment(@PathVariable Long id) {
         log.info("消费者 查询... {}", id);
         return restTemplate.getForObject(PAYMENT_BASE_URL + "/payment/get/" + id, CommonResult.class);
+    }
+
+    @GetMapping(value = "/consumer/payment/getForEntity/{id}")
+    public CommonResult<Payment> getPayment2(@PathVariable Long id) {
+        log.info("消费者 查询... {}", id);
+        ResponseEntity<CommonResult> responseEntity = restTemplate.getForEntity(PAYMENT_BASE_URL + "/payment/get/" + id, CommonResult.class);
+        if (responseEntity.getStatusCode().is2xxSuccessful()) {
+            log.error("操作成功 :{}", responseEntity);
+            return responseEntity.getBody();
+        } else {
+            log.error("操作失败 :{}", responseEntity);
+            return new CommonResult<>(responseEntity.getStatusCodeValue(), "操作失败", null);
+        }
     }
 }
