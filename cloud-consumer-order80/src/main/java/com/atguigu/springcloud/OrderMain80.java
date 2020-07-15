@@ -15,7 +15,7 @@ import org.springframework.cloud.netflix.ribbon.RibbonClient;
  */
 @SpringBootApplication
 @EnableEurekaClient
-@RibbonClient(name = "CLOUD-PAYMENT-SERVICE", configuration = MySelfRule.class)//配置ribbon客户端消费指定服务时采用指定策略
+//@RibbonClient(name = "CLOUD-PAYMENT-SERVICE", configuration = MySelfRule.class)//配置ribbon客户端消费指定服务时采用指定策略
 public class OrderMain80 {
 
     public static void main(String[] args) {

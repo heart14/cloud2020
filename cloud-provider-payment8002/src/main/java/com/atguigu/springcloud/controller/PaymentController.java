@@ -73,4 +73,9 @@ public class PaymentController {
 
         return new CommonResult(200, "service discovery", discoveryClient);
     }
+
+    @GetMapping(value = "/payment/lb")
+    public String paymentLb() {
+        return "service port :" + serverPort;
+    }
 }
